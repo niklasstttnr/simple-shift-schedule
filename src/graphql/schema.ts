@@ -1,5 +1,6 @@
 import { gql } from 'graphql-tag';
 import { userTypeDefs } from './modules/user/schema.js';
+import { roleTypeDefs } from './modules/role/schema.js';
 
 const baseTypeDefs = gql`
   scalar DateTime
@@ -13,4 +14,4 @@ const baseTypeDefs = gql`
   }
 `;
 
-export const typeDefs = [baseTypeDefs, userTypeDefs];
+export const typeDefs = [baseTypeDefs, userTypeDefs, roleTypeDefs];

@@ -6,6 +6,7 @@ export const userTypeDefs = gql`
     email: String!
     name: String!
     createdAt: DateTime!
+    roles: [Role!]!
   }
 
   extend type Query {
@@ -16,5 +17,7 @@ export const userTypeDefs = gql`
   extend type Mutation {
     createUser(email: String!, name: String!): User!
     deleteUser(id: ID!): User!
+    addRoleToUser(userId: ID!, roleId: ID!): User!
+    removeRoleFromUser(userId: ID!, roleId: ID!): User!
   }
 `;
