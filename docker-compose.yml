@@ -30,4 +30,3 @@ services:
 volumes:
   postgres_data:
     name: base_graphql_postgres_data
-

@@ -27,6 +27,12 @@ type RemoveRoleFromUserArgs = {
 };
 
 export const userResolvers = {
+  Query: {
+    user: () => ({}),
+  },
+  Mutation: {
+    user: () => ({}),
+  },
   UserQueries: {
     users: async (
       _parent: ResolversParent,

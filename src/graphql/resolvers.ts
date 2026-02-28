@@ -5,6 +5,16 @@ import { userResolvers } from './modules/user/resolvers.js';
 
 export const resolvers = {
   DateTime: DateTimeScalar,
+  Query: {
+    ...userResolvers.Query,
+    ...roleResolvers.Query,
+    ...shiftResolvers.Query,
+  },
+  Mutation: {
+    ...userResolvers.Mutation,
+    ...roleResolvers.Mutation,
+    ...shiftResolvers.Mutation,
+  },
   User: {
     ...userResolvers.User,
   },

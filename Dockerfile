@@ -20,7 +20,7 @@ COPY src ./src
 # Build stage
 FROM deps AS build
 
-RUN npm run prisma:generate
+RUN npx prisma generate
 RUN npm run build
 
 # Production image
@@ -29,7 +29,8 @@ FROM base AS runner
 WORKDIR /usr/src/app
 
 COPY package.json package-lock.json* ./
-COPY --from=deps /usr/src/app/node_modules ./node_modules
+# Use node_modules from build so it includes the generated Prisma client
+COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
 COPY prisma ./prisma
 

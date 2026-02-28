@@ -50,6 +50,12 @@ type UpdateRequiredRoleCountArgs = {
 };
 
 export const shiftResolvers = {
+  Query: {
+    shift: () => ({}),
+  },
+  Mutation: {
+    shift: () => ({}),
+  },
   ShiftQueries: {
     shifts: async (
       _parent: ResolversParent,

@@ -8,11 +8,15 @@ import { prisma } from './prisma/client.js';
 import { UserService } from './graphql/modules/user/user.service.js';
 import { env } from './config/env.js';
 import type { GraphQLContext } from './types/context.js';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 
 async function main(): Promise<void> {
   const server = new ApolloServer<GraphQLContext>({
     typeDefs,
     resolvers,
+    // Remove this plugin in real production - TESTNG ONLY
+    plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
+    introspection: true,
   });
 
   try {

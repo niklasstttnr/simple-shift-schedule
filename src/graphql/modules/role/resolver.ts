@@ -17,6 +17,12 @@ type DeleteRoleArgs = {
 };
 
 export const roleResolvers = {
+  Query: {
+    role: () => ({}),
+  },
+  Mutation: {
+    role: () => ({}),
+  },
   RoleQueries: {
     roles: async (
       _parent: ResolversParent,
