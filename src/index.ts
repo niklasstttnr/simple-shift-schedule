@@ -1,0 +1,40 @@
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { ApolloServer } from '@apollo/server';
+
+import { typeDefs } from './graphql/schema.js';
+import { resolvers } from './graphql/resolvers.js';
+import { prisma } from './prisma/client.js';
+import { env } from './config/env.js';
+
+export type GraphQLContext = {
+  prisma: typeof prisma;
+};
+
+async function main(): Promise<void> {
+  const server = new ApolloServer<GraphQLContext>({
+    typeDefs,
+    resolvers,
+  });
+
+  try {
+    const { url } = await startStandaloneServer(server, {
+      listen: { port: env.PORT },
+      context: async (): Promise<GraphQLContext> => ({
+        prisma,
+      }),
+    });
+
+    // eslint-disable-next-line no-console
+    console.log(`🚀 GraphQL server ready at ${url}`);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Failed to start server', error);
+    await prisma.$disconnect().catch(() => {
+      // ignore
+    });
+    process.exitCode = 1;
+  }
+}
+
+void main();
+
