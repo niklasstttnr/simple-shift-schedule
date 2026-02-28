@@ -1,6 +1,5 @@
 import type { Role, User } from '@prisma/client';
 import type { GraphQLContext } from '../../../types/context.js';
-import { UserService } from './user.service.js';
 
 type ResolversParent = Record<string, unknown>;
 
@@ -32,7 +31,7 @@ export const userResolvers = {
     users: async (
       _parent: ResolversParent,
       _args: Record<string, never>,
-      ctx: GraphQLContext,
+      ctx: GraphQLContext
     ): Promise<User[]> => {
       const userService = ctx.services.userService;
       return userService.getAllUsers();
@@ -40,7 +39,7 @@ export const userResolvers = {
     user: async (
       _parent: ResolversParent,
       args: UserArgs,
-      ctx: GraphQLContext,
+      ctx: GraphQLContext
     ): Promise<User | null> => {
       const userService = ctx.services.userService;
       return userService.getUserById(args.id);
@@ -55,7 +54,7 @@ export const userResolvers = {
     createUser: async (
       _parent: ResolversParent,
       args: CreateUserArgs,
-      ctx: GraphQLContext,
+      ctx: GraphQLContext
     ): Promise<User> => {
       const userService = ctx.services.userService;
       return userService.createUser(args.email, args.name);
@@ -63,7 +62,7 @@ export const userResolvers = {
     deleteUser: async (
       _parent: ResolversParent,
       args: DeleteUserArgs,
-      ctx: GraphQLContext,
+      ctx: GraphQLContext
     ): Promise<User> => {
       const userService = ctx.services.userService;
       return userService.deleteUser(args.id);
@@ -71,7 +70,7 @@ export const userResolvers = {
     addRoleToUser: async (
       _parent: ResolversParent,
       args: AddRoleToUserArgs,
-      ctx: GraphQLContext,
+      ctx: GraphQLContext
     ): Promise<User> => {
       const userService = ctx.services.userService;
       return userService.addRoleToUser(args.userId, args.roleId);
@@ -79,7 +78,7 @@ export const userResolvers = {
     removeRoleFromUser: async (
       _parent: ResolversParent,
       args: RemoveRoleFromUserArgs,
-      ctx: GraphQLContext,
+      ctx: GraphQLContext
     ): Promise<User> => {
       const userService = ctx.services.userService;
       return userService.removeRoleFromUser(args.userId, args.roleId);

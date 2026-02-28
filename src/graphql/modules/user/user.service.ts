@@ -44,7 +44,11 @@ export class UserService {
         },
       });
     } catch (error) {
-      if (error instanceof Error && 'code' in error && (error as { code: string }).code === 'P2002') {
+      if (
+        error instanceof Error &&
+        'code' in error &&
+        (error as { code: string }).code === 'P2002'
+      ) {
         throw new Error('A user with this email already exists.');
       }
       throw error;
@@ -57,7 +61,11 @@ export class UserService {
         where: { id },
       });
     } catch (error) {
-      if (error instanceof Error && 'code' in error && (error as { code: string }).code === 'P2025') {
+      if (
+        error instanceof Error &&
+        'code' in error &&
+        (error as { code: string }).code === 'P2025'
+      ) {
         throw new Error('User not found.');
       }
       throw error;
@@ -119,7 +127,10 @@ export class UserService {
     }
   }
 
-  async removeRoleFromUser(userId: string, roleId: string): Promise<UserWithRoles> {
+  async removeRoleFromUser(
+    userId: string,
+    roleId: string
+  ): Promise<UserWithRoles> {
     try {
       await this.prisma.userRole.delete({
         where: {

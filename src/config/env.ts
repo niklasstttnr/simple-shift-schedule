@@ -11,7 +11,9 @@ function parsePort(value: string | undefined): number {
 
   const parsed = Number(value);
   if (!Number.isInteger(parsed) || parsed <= 0) {
-    throw new Error(`Invalid PORT value "${value}". It must be a positive integer.`);
+    throw new Error(
+      `Invalid PORT value "${value}". It must be a positive integer.`
+    );
   }
 
   return parsed;
@@ -30,4 +32,3 @@ export const env = {
   PORT: parsePort(process.env.PORT),
   DATABASE_URL: requireEnv('DATABASE_URL'),
 } as const;
-
