@@ -8,20 +8,22 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  createdAt DateTime @default(now())
-  roles     UserRole[]
+  id           String            @id @default(cuid())
+  email        String            @unique
+  name         String
+  createdAt    DateTime          @default(now())
+  roles        UserRole[]
+  shiftAssignments ShiftAssignment[]
 }
 
 model Role {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  users       UserRole[]
+  id                 String               @id @default(cuid())
+  name               String               @unique
+  description        String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  users              UserRole[]
+  shiftRequiredRoles ShiftRequiredRole[]
 }
 
 model UserRole {
@@ -35,4 +37,41 @@ model UserRole {
   @@unique([userId, roleId])
   @@index([userId])
   @@index([roleId])
+}
+
+model Shift {
+  id              String               @id @default(cuid())
+  name            String
+  startDateTime   DateTime
+  endDateTime     DateTime
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  requiredRoles   ShiftRequiredRole[]
+  assignments     ShiftAssignment[]
+}
+
+model ShiftRequiredRole {
+  id      String @id @default(cuid())
+  shiftId String
+  roleId  String
+  count   Int    @default(1)
+  shift   Shift  @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+  role    Role   @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  @@unique([shiftId, roleId])
+  @@index([shiftId])
+  @@index([roleId])
+}
+
+model ShiftAssignment {
+  id        String   @id @default(cuid())
+  shiftId   String
+  userId    String
+  createdAt DateTime @default(now())
+  shift     Shift    @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([shiftId, userId])
+  @@index([shiftId])
+  @@index([userId])
 }

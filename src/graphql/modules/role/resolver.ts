@@ -56,14 +56,14 @@ export const roleResolvers = {
         },
       });
     },
-  },
-  deleteRole: async (
-    _parent: ResolversParent,
-    args: DeleteRoleArgs,
-    ctx: GraphQLContext
-  ): Promise<Role> => {
-    return ctx.prisma.role.delete({
-      where: { id: args.id },
-    });
+    deleteRole: async (
+      _parent: ResolversParent,
+      args: DeleteRoleArgs,
+      ctx: GraphQLContext
+    ): Promise<Role> => {
+      return ctx.prisma.role.delete({
+        where: { id: args.id },
+      });
+    },
   },
 };
