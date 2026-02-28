@@ -27,7 +27,7 @@ type RemoveRoleFromUserArgs = {
 };
 
 export const userResolvers = {
-  Query: {
+  UserQueries: {
     users: async (
       _parent: ResolversParent,
       _args: Record<string, never>,
@@ -50,7 +50,7 @@ export const userResolvers = {
       return parent.roles.map((userRole) => userRole.role);
     },
   },
-  Mutation: {
+  UserMutations: {
     createUser: async (
       _parent: ResolversParent,
       args: CreateUserArgs,

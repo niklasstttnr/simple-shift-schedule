@@ -50,7 +50,7 @@ type UpdateRequiredRoleCountArgs = {
 };
 
 export const shiftResolvers = {
-  Query: {
+  ShiftQueries: {
     shifts: async (
       _parent: ResolversParent,
       _args: Record<string, never>,
@@ -66,7 +66,7 @@ export const shiftResolvers = {
       return ctx.services.shiftService.getShiftById(args.id);
     },
   },
-  Mutation: {
+  ShiftMutations: {
     createShift: async (
       _parent: ResolversParent,
       args: CreateShiftArgs,
@@ -87,8 +87,12 @@ export const shiftResolvers = {
       const { id, requiredRoles, ...rest } = args;
       return ctx.services.shiftService.updateShift(id, {
         ...(rest.name != null && { name: rest.name }),
-        ...(rest.startDateTime != null && { startDateTime: new Date(rest.startDateTime) }),
-        ...(rest.endDateTime != null && { endDateTime: new Date(rest.endDateTime) }),
+        ...(rest.startDateTime != null && {
+          startDateTime: new Date(rest.startDateTime),
+        }),
+        ...(rest.endDateTime != null && {
+          endDateTime: new Date(rest.endDateTime),
+        }),
         ...(requiredRoles != null && { requiredRoles }),
       });
     },
@@ -104,14 +108,20 @@ export const shiftResolvers = {
       args: AssignUserToShiftArgs,
       ctx: GraphQLContext
     ): Promise<ShiftWithRelations> => {
-      return ctx.services.shiftService.assignUserToShift(args.shiftId, args.userId);
+      return ctx.services.shiftService.assignUserToShift(
+        args.shiftId,
+        args.userId
+      );
     },
     removeUserFromShift: async (
       _parent: ResolversParent,
       args: RemoveUserFromShiftArgs,
       ctx: GraphQLContext
     ): Promise<ShiftWithRelations> => {
-      return ctx.services.shiftService.removeUserFromShift(args.shiftId, args.userId);
+      return ctx.services.shiftService.removeUserFromShift(
+        args.shiftId,
+        args.userId
+      );
     },
     addRequiredRoleToShift: async (
       _parent: ResolversParent,
@@ -129,7 +139,10 @@ export const shiftResolvers = {
       args: RemoveRequiredRoleFromShiftArgs,
       ctx: GraphQLContext
     ): Promise<ShiftWithRelations> => {
-      return ctx.services.shiftService.removeRequiredRoleFromShift(args.shiftId, args.roleId);
+      return ctx.services.shiftService.removeRequiredRoleFromShift(
+        args.shiftId,
+        args.roleId
+      );
     },
     updateRequiredRoleCount: async (
       _parent: ResolversParent,

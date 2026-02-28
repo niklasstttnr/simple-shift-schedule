@@ -17,7 +17,7 @@ type DeleteRoleArgs = {
 };
 
 export const roleResolvers = {
-  Query: {
+  RoleQueries: {
     roles: async (
       _parent: ResolversParent,
       _args: Record<string, never>,
@@ -43,7 +43,7 @@ export const roleResolvers = {
       });
     },
   },
-  Mutation: {
+  RoleMutations: {
     createRole: async (
       _parent: ResolversParent,
       args: CreateRoleArgs,
