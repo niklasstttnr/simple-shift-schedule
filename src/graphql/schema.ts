@@ -1,22 +1,16 @@
 import { gql } from 'graphql-tag';
+import { userTypeDefs } from './modules/user/schema.js';
 
-export const typeDefs = gql`
+const baseTypeDefs = gql`
   scalar DateTime
 
-  type User {
-    id: ID!
-    email: String!
-    name: String!
-    createdAt: DateTime!
-  }
-
   type Query {
-    users: [User!]!
-    user(id: ID!): User
+    _empty: String
   }
 
   type Mutation {
-    createUser(email: String!, name: String!): User!
+    _empty: String
   }
 `;
 
+export const typeDefs = [baseTypeDefs, userTypeDefs];

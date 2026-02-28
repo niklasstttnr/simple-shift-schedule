@@ -5,10 +5,7 @@ import { typeDefs } from './graphql/schema.js';
 import { resolvers } from './graphql/resolvers.js';
 import { prisma } from './prisma/client.js';
 import { env } from './config/env.js';
-
-export type GraphQLContext = {
-  prisma: typeof prisma;
-};
+import type { GraphQLContext } from './types/context.js';
 
 async function main(): Promise<void> {
   const server = new ApolloServer<GraphQLContext>({
@@ -24,10 +21,8 @@ async function main(): Promise<void> {
       }),
     });
 
-    // eslint-disable-next-line no-console
-    console.log(`🚀 GraphQL server ready at ${url}`);
+    console.log(`GraphQL server ready at ${url}`);
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error('Failed to start server', error);
     await prisma.$disconnect().catch(() => {
       // ignore
