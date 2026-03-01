@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { ConfirmDeleteModal } from "@/components/common/ConfirmDeleteModal";
 import {
   Select,
   SelectContent,
@@ -208,35 +209,19 @@ export function UserDetailModal({
       </DialogContent>
     </Dialog>
 
-    <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Delete user</DialogTitle>
-          <DialogDescription>
-            Are you sure you want to delete {user.name}? This action cannot be
-            undone.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setDeleteConfirmOpen(false)}
-            disabled={deleteBusy}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="button"
-            variant="destructive"
-            onClick={handleConfirmDelete}
-            disabled={deleteBusy}
-          >
-            {deleteBusy ? "Deleting…" : "Delete"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <ConfirmDeleteModal
+      open={deleteConfirmOpen}
+      onOpenChange={setDeleteConfirmOpen}
+      title="Delete user"
+      description={
+        <>
+          Are you sure you want to delete {user.name}? This action cannot be
+          undone.
+        </>
+      }
+      onConfirm={handleConfirmDelete}
+      busy={deleteBusy}
+    />
   </>
   );
 }
