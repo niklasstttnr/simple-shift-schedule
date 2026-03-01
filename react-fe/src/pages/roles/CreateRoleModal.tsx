@@ -69,11 +69,7 @@ export function CreateRoleModal({
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to create role";
-      if (/name|already exists/i.test(message)) {
-        form.setError("name", { type: "server", message });
-      } else {
-        form.setError("name", { type: "server", message });
-      }
+      form.setError("name", { type: "server", message });
     }
   }
 
