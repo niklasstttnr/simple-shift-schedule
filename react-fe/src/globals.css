@@ -1,0 +1,127 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Design system: Plus Jakarta Sans + teal-green palette */
+@theme {
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+}
+
+/* shadcn/ui CSS variables – light theme */
+:root {
+  --radius: 0.625rem;
+  --background: #f8fafb;
+  --foreground: #0e3734;
+  --card: rgb(209, 252, 205);
+  --card-foreground: #0e3734;
+  --popover: #ffffff;
+  --popover-foreground: #0e3734;
+  --primary: rgb(51, 185, 156);
+  --primary-foreground: #ffffff;
+  --secondary: rgb(209, 252, 205);
+  --secondary-foreground: #0e3734;
+  --muted: #e8edef;
+  --muted-foreground: #4a6b69;
+  --accent: rgb(209, 252, 205);
+  --accent-foreground: #0e3734;
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: #ffffff;
+  --border: #dce4e6;
+  --input: #dce4e6;
+  --ring: rgb(51, 185, 156);
+  --chart-1: rgb(51, 185, 156);
+  --chart-2: #0e3734;
+  --chart-3: rgb(209, 252, 205);
+  --chart-4: #4a6b69;
+  --chart-5: #e8edef;
+  --sidebar: #f8fafb;
+  --sidebar-foreground: #0e3734;
+  --sidebar-primary: rgb(51, 185, 156);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgb(209, 252, 205);
+  --sidebar-accent-foreground: #0e3734;
+  --sidebar-border: #dce4e6;
+  --sidebar-ring: rgb(51, 185, 156);
+}
+
+.dark {
+  --background: #0e3734;
+  --foreground: #f8fafb;
+  --card: #0f423f;
+  --card-foreground: #f8fafb;
+  --popover: #0f423f;
+  --popover-foreground: #f8fafb;
+  --primary: rgb(51, 185, 156);
+  --primary-foreground: #0e3734;
+  --secondary: #1a524f;
+  --secondary-foreground: #f8fafb;
+  --muted: #1a524f;
+  --muted-foreground: #a8c0be;
+  --accent: #1a524f;
+  --accent-foreground: #f8fafb;
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: #ffffff;
+  --border: rgb(255 255 255 / 10%);
+  --input: rgb(255 255 255 / 15%);
+  --ring: rgb(51, 185, 156);
+  --chart-1: rgb(51, 185, 156);
+  --chart-2: rgb(209, 252, 205);
+  --chart-3: #a8c0be;
+  --chart-4: #4a6b69;
+  --chart-5: #e8edef;
+  --sidebar: #0f423f;
+  --sidebar-foreground: #f8fafb;
+  --sidebar-primary: rgb(51, 185, 156);
+  --sidebar-primary-foreground: #0e3734;
+  --sidebar-accent: #1a524f;
+  --sidebar-accent-foreground: #f8fafb;
+  --sidebar-border: rgb(255 255 255 / 10%);
+  --sidebar-ring: rgb(51, 185, 156);
+}
+
+/* Map shadcn variables to Tailwind theme for utility classes */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}

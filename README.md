@@ -1,68 +1,71 @@
 # base-graphql
 
-Node.js + TypeScript + Apollo Server + Prisma + PostgreSQL. GraphQL API with domain-grouped queries and mutations (user, role, shift).
+Full-stack app: GraphQL API (Node.js + Apollo + Prisma) and React frontend (Vite + Tailwind + shadcn/ui).
 
-## Prerequisites
+## Repo structure
 
-- Node.js ≥ 20
-- PostgreSQL (or use Docker)
+| Project                         | Description                                                                          |
+| ------------------------------- | ------------------------------------------------------------------------------------ |
+| **[graphql-be](./graphql-be/)** | Backend GraphQL API — Apollo Server, Prisma, PostgreSQL. Domains: user, role, shift. |
+| **[react-fe](./react-fe/)**     | Frontend — React 19, Vite, Tailwind CSS, shadcn/ui, Apollo Client.                   |
 
-## Setup
+Each project has its own **README** with setup, scripts, and details:
+
+- **[Backend README](./graphql-be/README.md)** — Prerequisites, DB setup, migrations, API shape.
+- **[Frontend README](./react-fe/README.md)** — Stack, run locally, project structure, shadcn.
+
+## Quick start (both apps locally)
+
+1. **Backend** (API on port 4000):
+
+   ```bash
+   cd graphql-be
+   cp env.example .env   # edit .env if needed
+   npm install
+   npm run prisma:generate
+   npm run prisma:migrate
+   npm run dev
+   ```
+
+2. **Frontend** (app on port 5173):
+
+   ```bash
+   cd react-fe
+   npm install
+   npm run dev
+   ```
+
+   Frontend uses `http://localhost:4000/graphql` by default (see [react-fe README](./react-fe/README.md) for env).
+
+## Docker (all services from repo root)
+
+A single **docker-compose** in the repo root runs Postgres, the API, and the frontend.
+
+1. Copy the env example and edit if needed (DB user/password):
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Start everything:
+
+   ```bash
+   docker compose up --build
+   ```
+
+- **Postgres** — port `5432` (credentials from `.env`)
+- **API** — [http://localhost:4000](http://localhost:4000) (GraphQL at `/graphql`)
+- **Frontend** — [http://localhost](http://localhost) (port 80). On Linux, if port 80 needs sudo, change the frontend port in docker-compose to `"8080:80"` and use http://localhost:8080
+
+**First-time setup:** apply database migrations before using the API. With Postgres already running (e.g. via `docker compose up -d postgres`), run migrations using the same DB user, password, and db name as in your root `.env`:
 
 ```bash
-cp env.example .env
-# Edit .env if your database URL differs (use localhost for local dev)
-
-npm install
-npm run prisma:generate
-npm run prisma:migrate
+cd graphql-be
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres npm run prisma:migrate
 ```
 
-## Run locally
+If you changed `POSTGRES_USER`, `POSTGRES_PASSWORD`, or `POSTGRES_DB` in `.env`, set `DATABASE_URL` accordingly.
 
-```bash
-# Start Postgres (if using Docker for DB only)
-docker compose up -d postgres
+Then start the rest: `docker compose up --build` (or start `api` and `frontend` if postgres is already up).
 
-npm run dev
-```
-
-API: **http://localhost:4000** — Apollo Sandbox available in development.
-
-## Run with Docker
-
-```bash
-docker compose up -d
-```
-
-API: **http://localhost:4000**. `DATABASE_URL` is overridden in `docker-compose.yml` so the API connects to the `postgres` service by hostname.
-
-## API shape
-
-Operations are grouped by domain:
-
-| Domain | Query | Mutation |
-|--------|--------|----------|
-| **user** | `user { users, user(id) }` | `user { createUser, deleteUser, addRoleToUser, removeRoleFromUser }` |
-| **role** | `role { roles, role(id) }` | `role { createRole, deleteRole }` |
-| **shift** | `shift { shifts, shift(id) }` | `shift { createShift, updateShift, deleteShift, assignUserToShift, ... }` |
-
-Example:
-
-```graphql
-query {
-  user { users { id name email } }
-  shift { shifts { id name startDateTime } }
-}
-```
-
-## Scripts
-
-| Command | Description |
-|---------|--------------|
-| `npm run dev` | Start with hot reload (tsx) |
-| `npm run build` | Compile TypeScript |
-| `npm run start` | Run compiled app |
-| `npm run prisma:generate` | Generate Prisma client |
-| `npm run prisma:migrate` | Run migrations |
-| `npm run format` | Format with Prettier |
+For per-project setup and scripts, see the READMEs linked above.
