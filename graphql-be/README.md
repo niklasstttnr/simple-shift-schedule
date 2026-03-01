@@ -31,11 +31,15 @@ API: **http://localhost:4000** — Apollo Sandbox available in development.
 
 ## Run with Docker
 
+From this folder (Postgres + API only):
+
 ```bash
 docker compose up -d
 ```
 
-API: **http://localhost:4000**. `DATABASE_URL` is overridden in `docker-compose.yml` so the API connects to the `postgres` service by hostname.
+API: **http://localhost:4000**. `DATABASE_URL` is set in `docker-compose.yml` so the API uses the `postgres` service.
+
+To run **all services** (Postgres + API + frontend) from the repo root, see the [root README](../README.md#docker-all-services-from-repo-root).
 
 ## API shape
 

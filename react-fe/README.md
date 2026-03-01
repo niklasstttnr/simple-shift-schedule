@@ -53,11 +53,13 @@ React 19 frontend with Vite, TypeScript, Tailwind CSS, shadcn/ui, and Apollo Cli
 
 ## Run with Docker
 
-Build and run the app on port 3000:
+From this folder (frontend only, port 3000):
 
 ```bash
 docker compose up --build
 ```
+
+To run **all services** (Postgres + API + frontend) from the repo root, see the [root README](../README.md#docker-all-services-from-repo-root).
 
 Open [http://localhost:3000](http://localhost:3000).
 
