@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@custom-variant dark (&:is(.dark *));
+
 /* Design system: Plus Jakarta Sans + teal-green palette */
 @theme {
   --font-sans: "Plus Jakarta Sans", sans-serif;
