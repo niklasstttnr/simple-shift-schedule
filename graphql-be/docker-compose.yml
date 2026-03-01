@@ -23,6 +23,8 @@ services:
       - .env
     environment:
       NODE_ENV: production
+      # Override DATABASE_URL so the container uses the postgres service host, not localhost
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
     ports:
       - '${PORT-4000}:4000'
     command: ['node', 'dist/index.js']

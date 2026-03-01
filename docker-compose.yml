@@ -26,6 +26,7 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-postgres}
     ports:
       - "4000:4000"
+    entrypoint: ["./docker-entrypoint.sh"]
     command: ["node", "dist/index.js"]
 
   frontend:

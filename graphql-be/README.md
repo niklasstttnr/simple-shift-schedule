@@ -31,15 +31,22 @@ API: **http://localhost:4000** — Apollo Sandbox available in development.
 
 ## Run with Docker
 
-From this folder (Postgres + API only):
+**Easiest: run everything from the repo root** (Postgres + API + frontend in one go, migrations run automatically):
+
+```bash
+# From repo root
+docker compose up --build
+```
+
+See the [root README](../README.md#run-with-docker-compose-recommended).
+
+From **this folder** (Postgres + API only, no frontend):
 
 ```bash
 docker compose up -d
 ```
 
-API: **http://localhost:4000**. `DATABASE_URL` is set in `docker-compose.yml` so the API uses the `postgres` service.
-
-To run **all services** (Postgres + API + frontend) from the repo root, see the [root README](../README.md#docker-all-services-from-repo-root).
+API: **http://localhost:4000**. Database migrations run automatically when the API container starts (`prisma migrate deploy` in the entrypoint). `DATABASE_URL` is overridden in `docker-compose.yml` so the API connects to the `postgres` service.
 
 ## API shape
 

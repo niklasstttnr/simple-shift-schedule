@@ -1,5 +1,9 @@
-import { startStandaloneServer } from '@apollo/server/standalone';
 import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@as-integrations/express4';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import express from 'express';
+import http from 'http';
+import cors from 'cors';
 
 import { ShiftService } from './graphql/modules/shift/shift.service.js';
 import { typeDefs } from './graphql/schema.js';
@@ -11,17 +15,26 @@ import type { GraphQLContext } from './types/context.js';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 
 async function main(): Promise<void> {
+  const app = express();
+  const httpServer = http.createServer(app);
+
   const server = new ApolloServer<GraphQLContext>({
     typeDefs,
     resolvers,
-    // Remove this plugin in real production - TESTNG ONLY
-    plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      ApolloServerPluginLandingPageLocalDefault({ embed: true }),
+    ],
     introspection: true,
   });
 
-  try {
-    const { url } = await startStandaloneServer(server, {
-      listen: { port: env.PORT },
+  await server.start();
+
+  app.use(
+    '/graphql',
+    cors<cors.CorsRequest>(),
+    express.json(),
+    expressMiddleware(server, {
       context: async (): Promise<GraphQLContext> => ({
         prisma,
         services: {
@@ -29,16 +42,18 @@ async function main(): Promise<void> {
           shiftService: new ShiftService(prisma),
         },
       }),
-    });
+    })
+  );
 
-    console.log(`GraphQL server ready at ${url}`);
-  } catch (error) {
-    console.error('Failed to start server', error);
-    await prisma.$disconnect().catch(() => {
-      // ignore
-    });
-    process.exitCode = 1;
-  }
+  await new Promise<void>((resolve) =>
+    httpServer.listen({ port: env.PORT }, resolve)
+  );
+
+  console.log(`GraphQL server ready at http://localhost:${env.PORT}/graphql`);
 }
 
-void main();
+main().catch(async (error) => {
+  console.error('Failed to start server', error);
+  await prisma.$disconnect().catch(() => {});
+  process.exitCode = 1;
+});

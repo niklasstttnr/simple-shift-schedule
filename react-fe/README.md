@@ -53,15 +53,22 @@ React 19 frontend with Vite, TypeScript, Tailwind CSS, shadcn/ui, and Apollo Cli
 
 ## Run with Docker
 
-From this folder (frontend only, port 3000):
+**Easiest: run the full stack from the repo root** (Postgres + API + frontend; migrations run automatically):
+
+```bash
+# From repo root
+docker compose up --build
+```
+
+Frontend is at [http://localhost](http://localhost) (port 80). See the [root README](../README.md#run-with-docker-compose-recommended).
+
+From **this folder** (frontend image only, if you have your own API/Postgres):
 
 ```bash
 docker compose up --build
 ```
 
-To run **all services** (Postgres + API + frontend) from the repo root, see the [root README](../README.md#docker-all-services-from-repo-root).
-
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000) (or the port configured in your compose file).
 
 To use a custom GraphQL endpoint in the built image, pass the env at **build** time:
 
