@@ -86,3 +86,45 @@ export const DELETE_SHIFT_MUTATION = gql`
     }
   }
 `;
+
+export const ASSIGN_USER_TO_SHIFT_MUTATION = gql`
+  mutation AssignUserToShift($shiftId: ID!, $userId: ID!) {
+    shift {
+      assignUserToShift(shiftId: $shiftId, userId: $userId) {
+        id
+        assignments {
+          id
+          user {
+            id
+            name
+            roles {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const REMOVE_USER_FROM_SHIFT_MUTATION = gql`
+  mutation RemoveUserFromShift($shiftId: ID!, $userId: ID!) {
+    shift {
+      removeUserFromShift(shiftId: $shiftId, userId: $userId) {
+        id
+        assignments {
+          id
+          user {
+            id
+            name
+            roles {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+`;

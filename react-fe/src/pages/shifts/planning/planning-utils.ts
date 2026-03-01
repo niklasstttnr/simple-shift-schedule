@@ -56,7 +56,9 @@ export function shiftPosition(
 
 /** Short summary of required roles for a shift, e.g. "2 Nurses, 1 Doctor". */
 export function requiredRolesSummary(shift: Shift): string {
-  const parts = shift.requiredRoles.map((r) => `${r.count} ${r.role.name}`);
+  const parts = shift.requiredRoles.map(
+    (r) => `${r.count} ${r.role.name}${r.count !== 1 ? "s" : ""}`
+  );
   const total = shift.requiredRoles.reduce((s, r) => s + r.count, 0);
   if (total === 0) return "0 roles";
   if (parts.length <= 2) return parts.join(", ");

@@ -5,6 +5,7 @@ import {
   CalendarRange,
   LayoutDashboard,
   Shield,
+  UserPlus,
   Users,
 } from "lucide-react";
 import {
@@ -28,7 +29,10 @@ const navItems = [
     icon: Calendar,
     label: "Shifts",
     to: "/shifts",
-    sub: [{ label: "Planning", to: "/shifts/planning", icon: CalendarRange }],
+    sub: [
+      { label: "Planning", to: "/shifts/planning", icon: CalendarRange },
+      { label: "Assignments", to: "/shifts/assignments", icon: UserPlus },
+    ],
   },
   { icon: Users, label: "Team", to: "/users" },
   { icon: Shield, label: "Roles", to: "/roles" },

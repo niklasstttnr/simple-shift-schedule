@@ -22,6 +22,10 @@ export const SHIFTS_QUERY = gql`
           user {
             id
             name
+            roles {
+              id
+              name
+            }
           }
         }
         createdAt
