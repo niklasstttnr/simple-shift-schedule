@@ -1,6 +1,19 @@
-# base-graphql
+# Simple-Shift-Schedule
 
-Full-stack app: GraphQL API (Node.js + Apollo + Prisma) and React frontend (Vite + Tailwind + shadcn/ui).
+**Shiftomatic** — a small full-stack app for planning and assigning shifts. Define roles, create shifts in a weekly calendar, and assign team members to shifts via drag-and-drop.
+
+- **Backend:** Node.js, Apollo Server, GraphQL, Prisma, PostgreSQL
+- **Frontend:** React 19, Vite, Tailwind CSS, shadcn/ui, Apollo Client
+
+## Idea
+
+The app helps you run a **shift schedule** for a team (e.g. bar, kitchen, retail):
+
+1. **Roles** — Define job types (e.g. Bartender, Host, Chef). Each shift is tied to one role.
+2. **Planning** — In a week view you create and edit shifts (date, time range, role). You can move between weeks and add as many shifts per day as you need.
+3. **Assignments** — In another week view you see the same shifts and assign users to them (e.g. by dragging a team member onto a shift). Each assignment links a user to a shift for that role and time.
+
+So: **Roles** → **Shifts** (planning) → **Assignments** (who works when). The frontend offers a **Team** page to manage users and a **Roles** page to manage roles; **Shifts → Planning** and **Shifts → Assignments** cover the rest of the workflow.
 
 ## Repo structure
 
