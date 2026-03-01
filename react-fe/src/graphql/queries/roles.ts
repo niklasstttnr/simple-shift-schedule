@@ -7,6 +7,8 @@ export const ROLES_QUERY = gql`
         id
         name
         description
+        createdAt
+        updatedAt
       }
     }
   }

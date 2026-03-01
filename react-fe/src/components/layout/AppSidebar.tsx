@@ -1,5 +1,11 @@
 import { Link } from "react-router-dom";
-import { Calendar, CalendarCheck, LayoutDashboard, Users } from "lucide-react";
+import {
+  Calendar,
+  CalendarCheck,
+  LayoutDashboard,
+  Shield,
+  Users,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -16,6 +22,7 @@ const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", to: "/" },
   { icon: Calendar, label: "Shifts", to: "/shifts" },
   { icon: Users, label: "Team", to: "/users" },
+  { icon: Shield, label: "Roles", to: "/roles" },
 ] as const;
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
