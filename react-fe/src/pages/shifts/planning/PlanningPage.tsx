@@ -29,6 +29,8 @@ import {
   shiftPosition,
 } from "./planning-utils";
 import { ShiftEntry } from "./ShiftEntry";
+import { ConfirmDeleteModal } from "@/components/common/ConfirmDeleteModal";
+import { useShiftService } from "@/hooks/use-shift-service";
 
 export function PlanningPage() {
   const [weekStart, setWeekStart] = useState(() => getMonday(new Date()));
@@ -38,7 +40,10 @@ export function PlanningPage() {
   );
   const [editShift, setEditShift] = useState<Shift | null>(null);
   const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteShift, setDeleteShift] = useState<Shift | null>(null);
   const { shifts, loading, error } = useShiftsQuery();
+  const shiftService = useShiftService();
 
   const weekDays = useMemo(() => getWeekDays(weekStart), [weekStart]);
 
@@ -95,6 +100,18 @@ export function PlanningPage() {
     });
     setCreateOpen(true);
   }, []);
+
+  function openDeleteShift(shift: Shift) {
+    setDeleteShift(shift);
+    setDeleteOpen(true);
+  }
+
+  function handleDeleteShift() {
+    if (!deleteShift) return;
+    shiftService.deleteShift(deleteShift.id);
+    setDeleteShift(null);
+    setDeleteOpen(false);
+  }
 
   function openCreateForSlot(day: Date, slotIndex: number) {
     const startMin =
@@ -243,6 +260,7 @@ export function PlanningPage() {
                     height={height}
                     onEdit={handleEditShift}
                     onDuplicate={handleDuplicateShift}
+                    onDelete={openDeleteShift}
                   />
                 );
               })}
@@ -278,6 +296,15 @@ export function PlanningPage() {
           if (!open) setEditShift(null);
         }}
         onSuccess={() => setEditShift(null)}
+      />
+
+      <ConfirmDeleteModal
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        title="Delete shift"
+        description="Are you sure you want to delete this shift?"
+        onConfirm={handleDeleteShift}
+        busy={false}
       />
     </div>
   );

@@ -3,6 +3,7 @@ import type { Shift } from "@/graphql/types";
 import { SHIFTS_QUERY } from "@/graphql/queries/shifts";
 import {
   CREATE_SHIFT_MUTATION,
+  DELETE_SHIFT_MUTATION,
   UPDATE_SHIFT_MUTATION,
 } from "@/graphql/mutations/shifts";
 
@@ -10,6 +11,7 @@ export type ShiftRequiredRoleInput = { roleId: string; count: number };
 
 type CreateShiftMutationData = { shift: { createShift: Shift } };
 type UpdateShiftMutationData = { shift: { updateShift: Shift } };
+type DeleteShiftMutationData = { shift: { deleteShift: Shift } };
 
 export function createShiftService(client: ApolloClient) {
   return {
@@ -29,7 +31,8 @@ export function createShiftService(client: ApolloClient) {
         },
         refetchQueries: [{ query: SHIFTS_QUERY }],
       });
-      if (!result.data?.shift?.createShift) throw new Error("Create shift failed");
+      if (!result.data?.shift?.createShift)
+        throw new Error("Create shift failed");
       return result.data.shift.createShift;
     },
 
@@ -47,8 +50,20 @@ export function createShiftService(client: ApolloClient) {
         variables: { id, ...updates },
         refetchQueries: [{ query: SHIFTS_QUERY }],
       });
-      if (!result.data?.shift?.updateShift) throw new Error("Update shift failed");
+      if (!result.data?.shift?.updateShift)
+        throw new Error("Update shift failed");
       return result.data.shift.updateShift;
+    },
+
+    async deleteShift(id: string): Promise<Shift> {
+      const result = await client.mutate<DeleteShiftMutationData>({
+        mutation: DELETE_SHIFT_MUTATION,
+        variables: { id },
+        refetchQueries: [{ query: SHIFTS_QUERY }],
+      });
+      if (!result.data?.shift?.deleteShift)
+        throw new Error("Delete shift failed");
+      return result.data.shift.deleteShift;
     },
   };
 }

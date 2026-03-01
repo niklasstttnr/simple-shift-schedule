@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, Pencil, Copy } from "lucide-react";
+import { MoreVertical, Pencil, Copy, Trash } from "lucide-react";
 
 export type ShiftEntryProps = {
   shift: Shift;
@@ -17,6 +17,7 @@ export type ShiftEntryProps = {
   height: number;
   onEdit?: (shift: Shift) => void;
   onDuplicate?: (shift: Shift) => void;
+  onDelete?: (shift: Shift) => void;
 };
 
 export function ShiftEntry({
@@ -25,6 +26,7 @@ export function ShiftEntry({
   height,
   onEdit,
   onDuplicate,
+  onDelete,
 }: ShiftEntryProps) {
   const summary = requiredRolesSummary(shift);
   const hasActions = onEdit ?? onDuplicate;
@@ -68,6 +70,15 @@ export function ShiftEntry({
                 <DropdownMenuItem onClick={() => onDuplicate(shift)}>
                   <Copy className="size-4" />
                   Duplicate shift
+                </DropdownMenuItem>
+              )}
+              {onDelete && (
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={() => onDelete(shift)}
+                >
+                  <Trash className="size-4" />
+                  Delete shift
                 </DropdownMenuItem>
               )}
             </DropdownMenuContent>

@@ -75,3 +75,14 @@ export const UPDATE_SHIFT_MUTATION = gql`
     }
   }
 `;
+
+/** Uses existing shift schema: shift { deleteShift(...) }. */
+export const DELETE_SHIFT_MUTATION = gql`
+  mutation DeleteShift($id: ID!) {
+    shift {
+      deleteShift(id: $id) {
+        id
+      }
+    }
+  }
+`;
