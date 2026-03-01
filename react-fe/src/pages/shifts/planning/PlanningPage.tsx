@@ -1,7 +1,8 @@
-import { useState, useMemo, Fragment } from "react";
+import { useState, useMemo, useCallback, Fragment } from "react";
 import { Button } from "@/components/ui/button";
 import { useShiftsQuery } from "@/hooks/use-shifts-query";
 import { CreateShiftModal, type CreateShiftInitial } from "./CreateShiftModal";
+import { EditShiftModal } from "./EditShiftModal";
 import {
   ChevronLeft,
   ChevronRight,
@@ -26,8 +27,8 @@ import {
   shiftInWeek,
   shiftDayIndex,
   shiftPosition,
-  requiredRolesSummary,
 } from "./planning-utils";
+import { ShiftEntry } from "./ShiftEntry";
 
 export function PlanningPage() {
   const [weekStart, setWeekStart] = useState(() => getMonday(new Date()));
@@ -35,6 +36,8 @@ export function PlanningPage() {
   const [createInitial, setCreateInitial] = useState<CreateShiftInitial | null>(
     null
   );
+  const [editShift, setEditShift] = useState<Shift | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
   const { shifts, loading, error } = useShiftsQuery();
 
   const weekDays = useMemo(() => getWeekDays(weekStart), [weekStart]);
@@ -70,6 +73,28 @@ export function PlanningPage() {
   function goToday() {
     setWeekStart(getMonday(new Date()));
   }
+
+  const handleEditShift = useCallback((shift: Shift) => {
+    setEditShift(shift);
+    setEditOpen(true);
+  }, []);
+
+  const handleDuplicateShift = useCallback((shift: Shift) => {
+    const start = new Date(shift.startDateTime);
+    const end = new Date(shift.endDateTime);
+    const pad = (n: number) => String(n).padStart(2, "0");
+    setCreateInitial({
+      name: shift.name,
+      date: dayKey(start),
+      startTime: `${pad(start.getHours())}:${pad(start.getMinutes())}`,
+      endTime: `${pad(end.getHours())}:${pad(end.getMinutes())}`,
+      requiredRoles: shift.requiredRoles.map((r) => ({
+        roleId: r.role.id,
+        count: r.count,
+      })),
+    });
+    setCreateOpen(true);
+  }, []);
 
   function openCreateForSlot(day: Date, slotIndex: number) {
     const startMin =
@@ -194,14 +219,14 @@ export function PlanningPage() {
           ))}
         </div>
 
-        {/* Shift blocks overlay: aligned over day columns, non-blocking for slot clicks */}
+        {/* Shift blocks overlay: aligned over day columns (start at 56px to skip time column) */}
         <div
-          className="absolute left-0 top-0 flex min-w-[600px] pointer-events-none"
+          className="absolute top-0 flex min-w-[600px] pointer-events-none"
           style={{
-            paddingLeft: 56,
+            left: 56,
+            width: "calc(100% - 56px)",
             paddingTop: PLANNING_HEADER_HEIGHT,
             height: PLANNING_ROW_HEIGHT * PLANNING_SLOTS_PER_DAY,
-            width: "calc(100% - 56px)",
           }}
         >
           {weekDays.map((day) => (
@@ -211,21 +236,14 @@ export function PlanningPage() {
                 dayStart.setHours(0, 0, 0, 0);
                 const { top, height } = shiftPosition(shift, dayStart);
                 return (
-                  <div
+                  <ShiftEntry
                     key={shift.id}
-                    className="absolute left-1 right-1 rounded border border-primary/30 bg-primary/15 px-2 py-1 text-xs pointer-events-auto"
-                    style={{
-                      top: `${top}%`,
-                      height: `${height}%`,
-                      minHeight: 20,
-                    }}
-                    title={`${shift.name} • ${requiredRolesSummary(shift)}`}
-                  >
-                    <div className="font-medium truncate">{shift.name}</div>
-                    <div className="text-muted-foreground truncate">
-                      {requiredRolesSummary(shift)}
-                    </div>
-                  </div>
+                    shift={shift}
+                    top={top}
+                    height={height}
+                    onEdit={handleEditShift}
+                    onDuplicate={handleDuplicateShift}
+                  />
                 );
               })}
             </div>
@@ -250,6 +268,16 @@ export function PlanningPage() {
         onOpenChange={setCreateOpen}
         initial={createInitial}
         onSuccess={() => setCreateInitial(null)}
+      />
+
+      <EditShiftModal
+        shift={editShift}
+        open={editOpen}
+        onOpenChange={(open) => {
+          setEditOpen(open);
+          if (!open) setEditShift(null);
+        }}
+        onSuccess={() => setEditShift(null)}
       />
     </div>
   );

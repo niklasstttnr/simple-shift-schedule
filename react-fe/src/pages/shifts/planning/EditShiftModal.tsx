@@ -30,9 +30,11 @@ import {
 } from "@/components/ui/select";
 import { useShiftService } from "@/hooks/use-shift-service";
 import { useRolesQuery } from "@/hooks/use-roles-query";
+import { dayKey } from "@/lib/date-utils";
 import { Plus, Trash2 } from "lucide-react";
+import type { Shift } from "@/graphql/types";
 
-const createShiftSchema = z
+const editShiftSchema = z
   .object({
     name: z.string().min(1, "Name is required"),
     date: z.string().min(1, "Pick a date"),
@@ -51,7 +53,7 @@ const createShiftSchema = z
     { message: "End time must be after start time", path: ["endTime"] }
   );
 
-type CreateShiftFormValues = z.infer<typeof createShiftSchema>;
+type EditShiftFormValues = z.infer<typeof editShiftSchema>;
 
 function toISO(dateStr: string, timeStr: string): string {
   const [y, m, d] = dateStr.split("-").map(Number);
@@ -59,32 +61,40 @@ function toISO(dateStr: string, timeStr: string): string {
   return new Date(y, m - 1, d, h, min).toISOString();
 }
 
-export type CreateShiftInitial = {
-  date: string; // YYYY-MM-DD
-  startTime?: string; // HH:mm
-  endTime?: string; // HH:mm
-  name?: string;
-  requiredRoles?: { roleId: string; count: number }[];
-};
+function shiftToFormValues(shift: Shift): EditShiftFormValues {
+  const start = new Date(shift.startDateTime);
+  const end = new Date(shift.endDateTime);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return {
+    name: shift.name,
+    date: dayKey(start),
+    startTime: `${pad(start.getHours())}:${pad(start.getMinutes())}`,
+    endTime: `${pad(end.getHours())}:${pad(end.getMinutes())}`,
+    requiredRoles: shift.requiredRoles.map((r) => ({
+      roleId: r.role.id,
+      count: r.count,
+    })),
+  };
+}
 
-type CreateShiftModalProps = {
+type EditShiftModalProps = {
+  shift: Shift | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  initial?: CreateShiftInitial | null;
   onSuccess?: () => void;
 };
 
-export function CreateShiftModal({
+export function EditShiftModal({
+  shift,
   open,
   onOpenChange,
-  initial,
   onSuccess,
-}: CreateShiftModalProps) {
+}: EditShiftModalProps) {
   const shiftService = useShiftService();
   const { roles } = useRolesQuery();
 
-  const form = useForm<CreateShiftFormValues>({
-    resolver: zodResolver(createShiftSchema),
+  const form = useForm<EditShiftFormValues>({
+    resolver: zodResolver(editShiftSchema),
     defaultValues: {
       name: "",
       date: "",
@@ -95,34 +105,10 @@ export function CreateShiftModal({
   });
 
   useEffect(() => {
-    if (open) {
-      const today = new Date();
-      const y = today.getFullYear();
-      const m = String(today.getMonth() + 1).padStart(2, "0");
-      const d = String(today.getDate()).padStart(2, "0");
-      const initialRoles =
-        initial?.requiredRoles?.length &&
-        initial.requiredRoles.every((r) => r.roleId && r.count > 0)
-          ? initial.requiredRoles
-          : [{ roleId: roles[0]?.id ?? "", count: 1 }];
-      form.reset({
-        name: initial?.name ?? "",
-        date: initial?.date ?? `${y}-${m}-${d}`,
-        startTime: initial?.startTime ?? "08:00",
-        endTime: initial?.endTime ?? "16:00",
-        requiredRoles: initialRoles,
-      });
+    if (open && shift) {
+      form.reset(shiftToFormValues(shift));
     }
-  }, [
-    open,
-    initial?.date,
-    initial?.startTime,
-    initial?.endTime,
-    initial?.name,
-    initial?.requiredRoles,
-    form,
-    roles,
-  ]);
+  }, [open, shift, form]);
 
   const requiredRoles = form.watch("requiredRoles");
 
@@ -138,7 +124,8 @@ export function CreateShiftModal({
     form.setValue("requiredRoles", next.length ? next : [{ roleId: "", count: 1 }]);
   }
 
-  async function onSubmit(values: CreateShiftFormValues) {
+  async function onSubmit(values: EditShiftFormValues) {
+    if (!shift) return;
     form.clearErrors();
     const valid = await form.trigger();
     if (!valid) return;
@@ -148,17 +135,17 @@ export function CreateShiftModal({
       return;
     }
     try {
-      await shiftService.createShift(
-        values.name,
-        toISO(values.date, values.startTime),
-        toISO(values.date, values.endTime),
-        filtered.map((r) => ({ roleId: r.roleId, count: r.count }))
-      );
+      await shiftService.updateShift(shift.id, {
+        name: values.name,
+        startDateTime: toISO(values.date, values.startTime),
+        endDateTime: toISO(values.date, values.endTime),
+        requiredRoles: filtered.map((r) => ({ roleId: r.roleId, count: r.count })),
+      });
       form.reset();
       onOpenChange(false);
       onSuccess?.();
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to create shift";
+      const message = err instanceof Error ? err.message : "Failed to update shift";
       form.setError("name", { type: "server", message });
     }
   }
@@ -167,14 +154,14 @@ export function CreateShiftModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Create shift</DialogTitle>
+          <DialogTitle>Edit shift</DialogTitle>
           <DialogDescription>
-            Set the day, time range, and required roles. You can assign team members later.
+            Update the shift name, time range, and required roles.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormInput<CreateShiftFormValues>
+            <FormInput<EditShiftFormValues>
               control={form.control}
               name="name"
               label="Name"
@@ -272,7 +259,9 @@ export function CreateShiftModal({
                             min={1}
                             placeholder="#"
                             value={field.value != null ? field.value : ""}
-                            onChange={(e) => field.onChange(e.target.valueAsNumber || 0)}
+                            onChange={(e) =>
+                              field.onChange(e.target.valueAsNumber || 0)
+                            }
                           />
                         </FormControl>
                       </FormItem>
@@ -305,7 +294,7 @@ export function CreateShiftModal({
                 Cancel
               </Button>
               <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? "Creating…" : "Create"}
+                {form.formState.isSubmitting ? "Saving…" : "Save"}
               </Button>
             </DialogFooter>
           </form>
