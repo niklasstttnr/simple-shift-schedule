@@ -52,8 +52,8 @@ export const userResolvers = {
     },
   },
   User: {
-    roles: (parent: User & { roles: Array<{ role: Role }> }) => {
-      return parent.roles.map((userRole) => userRole.role);
+    roles: (parent: User & { roles?: Array<{ role: Role }> }) => {
+      return (parent.roles ?? []).map((userRole) => userRole.role);
     },
   },
   UserMutations: {
