@@ -86,13 +86,10 @@ export function RolesPage() {
         data={roles}
         getRowId={(row) => row.id}
         header={
-          <>
-            <h2 className="text-2xl font-semibold text-foreground">Roles</h2>
-            <Button onClick={() => setCreateOpen(true)} size="sm">
+          <Button onClick={() => setCreateOpen(true)} size="sm">
               <Plus className="size-4" />
               Add role
             </Button>
-          </>
         }
         emptyMessage="No roles yet. Create one to get started."
         loading={loading}

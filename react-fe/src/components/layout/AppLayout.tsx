@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import {
   SidebarInset,
   SidebarProvider,
@@ -6,12 +7,29 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { AppSidebar } from "./AppSidebar";
 
+// TODO: Use on generic solution to provide the page title, or implement breadcrumb navigation
+const PATH_TITLES: Record<string, string> = {
+  "/": "Dashboard",
+  "/users": "Team",
+  "/roles": "Roles",
+  "/shifts": "Shifts",
+  "/shifts/planning": "Planning",
+  "/shifts/assignments": "Assignments",
+};
+
+function getPageTitle(pathname: string): string {
+  return PATH_TITLES[pathname] ?? "Shift Schedule";
+}
+
 type AppLayoutProps = {
   children: React.ReactNode;
   className?: string;
 };
 
 export function AppLayout({ children, className }: AppLayoutProps) {
+  const { pathname } = useLocation();
+  const pageTitle = getPageTitle(pathname);
+
   return (
     <SidebarProvider
       className={className}
@@ -36,7 +54,7 @@ export function AppLayout({ children, className }: AppLayoutProps) {
           <Separator orientation="vertical" className="h-6" />
           <span>
             <h1 className="truncate text-lg font-semibold text-foreground">
-              Shift Schedule
+              {pageTitle}
             </h1>
           </span>
         </header>

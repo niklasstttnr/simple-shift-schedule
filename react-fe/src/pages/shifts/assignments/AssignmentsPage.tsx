@@ -111,21 +111,7 @@ export function AssignmentsPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-2">
-        <div className="flex items-center gap-3 min-w-0">
-          <h2 className="text-2xl font-semibold text-foreground shrink-0">
-            Assignments
-          </h2>
-          {assignMessage && (
-            <span
-              className="text-sm text-muted-foreground truncate"
-              role="status"
-              aria-live="polite"
-            >
-              {assignMessage}
-            </span>
-          )}
-        </div>
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2">
         <div className="flex flex-wrap items-center gap-2">
           <Button variant="outline" size="sm" onClick={goToday}>
             Today
@@ -152,6 +138,15 @@ export function AssignmentsPage() {
             </Button>
           </div>
         </div>
+        {assignMessage && (
+          <span
+            className="text-sm text-muted-foreground truncate sm:ml-auto"
+            role="status"
+            aria-live="polite"
+          >
+            {assignMessage}
+          </span>
+        )}
       </div>
 
       {error && (

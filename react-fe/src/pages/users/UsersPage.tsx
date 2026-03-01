@@ -63,13 +63,10 @@ export function UsersPage() {
         data={users}
         getRowId={(row) => row.id}
         header={
-          <>
-            <h2 className="text-2xl font-semibold text-foreground">Team</h2>
-            <Button onClick={() => setCreateOpen(true)} size="sm">
+          <Button onClick={() => setCreateOpen(true)} size="sm">
               <Plus className="size-4" />
               Add user
             </Button>
-          </>
         }
         emptyMessage="No users yet. Create one to get started."
         loading={loading}
