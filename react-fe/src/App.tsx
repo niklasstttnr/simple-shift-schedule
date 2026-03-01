@@ -3,6 +3,8 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { UsersPage } from "@/pages/users/UsersPage";
 import { RolesPage } from "@/pages/roles/RolesPage";
+import { ShiftsPage } from "@/pages/shifts/ShiftsPage";
+import { PlanningPage } from "@/pages/shifts/planning/PlanningPage";
 
 function Home() {
   return (
@@ -25,6 +27,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/users" element={<UsersPage />} />
           <Route path="/roles" element={<RolesPage />} />
+          <Route path="/shifts" element={<ShiftsPage />} />
+          <Route path="/shifts/planning" element={<PlanningPage />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>

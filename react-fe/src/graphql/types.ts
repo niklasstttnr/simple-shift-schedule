@@ -17,3 +17,25 @@ export type User = {
   createdAt: string;
   roles: Role[];
 };
+
+export type ShiftRequiredRole = {
+  id: string;
+  role: Role;
+  count: number;
+};
+
+export type ShiftAssignment = {
+  id: string;
+  user: User;
+};
+
+export type Shift = {
+  id: string;
+  name: string;
+  startDateTime: string;
+  endDateTime: string;
+  requiredRoles: ShiftRequiredRole[];
+  assignments: ShiftAssignment[];
+  createdAt: string;
+  updatedAt: string;
+};
